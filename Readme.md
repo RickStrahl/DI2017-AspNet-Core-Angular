@@ -1,4 +1,4 @@
-# Session Materials for Dev Intersection Angular and ASP.NET Core
+# Session Materials for Dev Intersection Angular Applications with ASP.NET Core
 
 These materials cover both Part 1 and Part 2 of the sessions given:
 
