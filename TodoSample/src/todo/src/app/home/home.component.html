@@ -1,0 +1,21 @@
+<p>
+  The time is:
+  <b>{{time | date:"MMM dd - hh:mm:ssa"}}</b>
+</p>
+
+<hr>
+
+<div class="form-group">
+  <label for="name">What's your name:</label>
+  <input type="text" class="form-control"
+         [(ngModel)]="name"
+         name="name" id="name" placeholder="Name...">
+</div>
+
+<div class="alert alert-info" *ngIf="name">
+  <i class="fa fa-info-circle"></i>
+  Welcome back, <b>{{name}}</b>. It's good to see you again...
+</div>
+
+
+

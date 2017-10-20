@@ -1,0 +1,67 @@
+<div class="well">
+    <form name="form1"  #form1="ngForm">
+        <div class="form-group">
+            <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-bookmark"></i>
+                    </span>
+                <input type="text" class="form-control"
+                       id="name" name="name"
+                       [(ngModel)]="activeTodo.title"
+                       placeholder="Enter the title for this ToDo"
+                       required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!--<label class="control-label" for="form-group-input">Description:</label>-->
+            <textarea class="form-control"
+                      id="description" name="description"
+                      style="height: 100px"
+                      [(ngModel)]="activeTodo.description"
+                      minlength="10"
+                      placeholder="Enter the description for this placeholder"
+                      required></textarea>
+        </div>
+
+        <button class="btn btn-primary" type="button"
+                (click)="addTodo(activeTodo,form1)"
+                [disabled]="form1.invalid">
+            <i class="fa fa-plus"></i> Add Todo
+        </button>
+        <button class="btn btn-primary" type="button"
+                (click)="loadTodos()">
+            <i class="fa fa-download"></i>
+            Load ToDos</button>
+    </form>
+</div>
+
+<div *ngFor="let todo of todos"
+     class="todo-item"
+     [ngClass]="{completed: todo.completed}">
+
+    <div class="pull-left" (click)="toggleCompleted(todo)">
+        <i class="fa "
+           [ngClass]="{'fa-bookmark-o': !todo.completed,'fa-check': todo.completed }"
+           style="cursor: pointer; color: green;">
+        </i>
+        <!--<input type="checkbox"-->
+        <!--title="check to complete todo"-->
+        <!--[(ngModel)]="todo.completed" />-->
+    </div>
+
+    <div class="pull-right">
+        <i class="fa fa-remove"
+           (click)="removeTodo(todo)"
+           style="color: darkred; cursor: pointer"></i>
+    </div>
+
+    <div class="todo-content">
+        <div class="todo-header">
+            {{ todo.title}}
+        </div>
+        <div>
+            {{todo.description}}
+        </div>
+    </div>
+</div>

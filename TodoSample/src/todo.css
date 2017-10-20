@@ -1,0 +1,49 @@
+html,body {
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif ;
+    font-size: 16px;
+}
+
+form input:not(.ng-pristine).ng-invalid,
+select:not(.ng-pristine).ng-invalid, textarea:not(.ng-pristine).ng-invalid
+{
+    background: lightpink;
+    border-left: 5px solid red;
+}
+form input:not([type=submit]):not([type=checkbox]):not([type=radio]):not([type=file]):not(.ng-pristine).ng-valid,
+select:not(.ng-pristine).ng-invalid, textarea:not(.ng-pristine):not(.ng-untouched).ng-valid
+{
+    background: #adfbdc;
+    border-left: 5px solid green;
+}
+
+.margin-top {
+    margin-top: 25px;
+}
+
+
+
+
+.todo-item {
+    padding: 5px;
+    border-bottom: 1px solid silver;
+    transition: opacity 900ms ease-out;
+}
+.todo-header {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #457196;
+}
+.todo-content {
+    padding-left: 30px;
+}
+.todo-content .fa-check {
+    color: green !important;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.completed {
+    text-decoration: line-through;
+    font-style: italic;
+    opacity: 0.4;
+
+}
