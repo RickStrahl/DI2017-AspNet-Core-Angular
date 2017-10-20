@@ -1,7 +1,7 @@
-# Dev Intersection Angular Applications with ASP.NET Core
-### Samples and Slides
+# Angular Applications with ASP.NET Core
+### Session Samples and Slides for ASP NET Intersection 2017
 
-These materials cover both Part 1 and Part 2 of the sessions given:
+These materials cover both Part 1 and Part 2 of the sessions given at Dev Intersection 2017:
 
 * **Angular Applications with ASP.NET Core - Part 1 - Getting Started**
 
