@@ -11,7 +11,7 @@ These materials cover both Part 1 and Part 2 of the sessions given at Dev Inters
 This repo contains the source code to the Todo sample application that we built in Part 1 as well as the combined slide deck for both sessions.
 
 
-* [Updated Slides]()
+* [Updated Slides](https://github.com/RickStrahl/DI2017-AspNet-Core-Angular/blob/master/Documents/Strahl_Angular_AspNet.pptx?raw=true)
 * [AlbumViewer Sample Application on GitHub](https://github.com/RickStrahl/AlbumViewerVNext)
 * [AlbumViewer Online Sample](https://albumviewer.west-wind.com/albums)
 
