@@ -27,56 +27,42 @@ public class TodoItem
     public static List<TodoItem> CreateList()
     {
         return new List<TodoItem> {
-        new TodoItem {
-            Title = "Dev Intersection Presentation",
-            Description = "Presentation at MGM Grand. Angular and ASP.NET ",
-            Entered = DateTime.UtcNow,
-        },
-        new TodoItem {
-            Title = "Hang out at the Pub after Presentation",
-            Description = "Light beer swilling and socializing after the presentation into the weee hours.",
-            Entered = DateTime.UtcNow.AddHours(1)
-        },
-        new TodoItem {
-            Title = "Fly back to Maui",
-            Description = "Make the long slog of a drive back home to Hood River.",
-            Entered = DateTime.UtcNow.AddDays(3)
-        },
-        new TodoItem {
-            Title = "Fret and Worry",
-            Description = "It's never done. Just one more tweak to the code - before the machine blue screens.",
-            Entered = DateTime.UtcNow.AddHours(6),
-            Completed = true
-        }
-        new TodoItem {
-            Title = "Get a good night's Sleep",
-            Description = "Snoooooore!!!!",
-            Entered = DateTime.UtcNow.AddHours(6),
-            Completed = true
-        }
-    };
+    new TodoItem {
+        Id="1111-111-11111",
+        Title = "Dev Intersection Presentation",
+        Description = "Presentation at MGM Grand. Angular and ASP.NET ",
+        Entered = DateTime.UtcNow,
+    },
+    new TodoItem {
+        Id="3333-333-33333",
+        Title = "Hang out at the Pub after Presentation",
+        Description = "Light beer swilling and socializing after the presentation into the weee hours.",
+        Entered = DateTime.UtcNow.AddHours(1)
+    },
+    new TodoItem {
+        Title = "Fly back to Maui",
+        Description = "Make the long slog of a drive back home to Hood River.",
+        Entered = DateTime.UtcNow.AddDays(3)
+    },
+    new TodoItem {
+        Title = "Fret and Worry",
+        Description = "It's never done. Just one more tweak to the code - before the machine blue screens.",
+        Entered = DateTime.UtcNow.AddHours(6),
+        Completed = true
+    },
+    new TodoItem {
+        Title = "Get a good night's Sleep",
+        Description = "Snoooooore!!!!",
+        Entered = DateTime.UtcNow.AddHours(6),
+        Completed = true
+    }
+};
     }
 }
-```        
-
-### Add Cors Support
-
-```cs
-services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy",
-        builder => builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
-});
 ```
 
 ### Todo Controller
-
 ```cs
-[EnableCors("CorsPolicy")]
 public class TodoController : Controller
 {
     public static List<TodoItem> TodoItems { get; set; }
@@ -101,11 +87,10 @@ public class TodoController : Controller
         return TodoItems;
     }
 
-    [HttpGet]
-    [Route("api/todo/{title}")]
-    public TodoItem Todo(string title)
+    [Route("api/todo/{id}")]
+    public TodoItem Todo(string id)
     {
-        return TodoItems.FirstOrDefault(td => td.Title.ToLower() == title.ToLower());
+        return TodoItems.FirstOrDefault(td => td.Id == id);
     }
 
     [HttpPost]
@@ -113,7 +98,7 @@ public class TodoController : Controller
     public TodoItem UpdateTodo([FromBody] TodoItem todo)
     {
         if (todo == null)
-            return null; 
+            return null;
 
         var idx = TodoItems.FindIndex(td => todo.Id == td.Id);
         lock (UpdateLock)
@@ -130,25 +115,132 @@ public class TodoController : Controller
     }
 
     [HttpDelete]
-    [Route("api/todo/{title}")]
-    public bool DeleteTodo(string title)
+    [Route("api/todo/{id}")]
+    public bool DeleteTodo(string id)
     {
-        if (string.IsNullOrEmpty(title))
+        if (string.IsNullOrEmpty(id))
             return false;
 
-        var idx = TodoItems.FindIndex(td => title.ToLower() == td.Title?.ToLower());
-        if (idx > -1)
+        var item = TodoItems.FirstOrDefault(td => id == td.Id);
+        if (item != null)
         {
             lock (UpdateLock)
             {
-                TodoItems.Remove(TodoItems[idx]);
+                TodoItems.Remove(item);
             }
             return true;
         }
 
         return false;
     }
+
+
 }
+```        
+
+### Add Cors Support
+
+```cs
+services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+```
+
+### Todo Controller
+
+```cs
+    [EnableCors("CorsPolicy")]
+    public class TodoController : Controller
+    {
+        public static List<TodoItem> TodoItems { get; set; }
+
+        private object UpdateLock = new object();
+
+        static TodoController()
+        {
+            TodoItems = TodoItem.CreateList();
+        }
+
+        [Route("api/todos")]
+        public IEnumerable<TodoItem> Todos()
+        {
+            return TodoItems;
+        }
+
+        [Route("api/todos/reload")]
+        public IEnumerable<TodoItem> ReloadTodos()
+        {
+            TodoItems = TodoItem.CreateList();
+            return TodoItems;
+        }
+
+        [Route("api/todo/{id}")]
+        public TodoItem Todo(string id)
+        {
+            return TodoItems.FirstOrDefault(td => td.Id == id);
+        }
+
+        [HttpPost]
+        [Route("api/todo")]
+        public TodoItem UpdateTodo([FromBody] TodoItem todo)
+        {
+            if (todo == null)
+                return null;
+
+            var idx = TodoItems.FindIndex(td => todo.Id == td.Id);
+            lock (UpdateLock)
+            {
+                if (idx < 0)
+                {
+                    todo.Id = Guid.NewGuid().ToString();
+                    TodoItems.Add(todo);
+                }
+                else
+                    TodoItems[idx] = todo;
+            }
+            return todo;
+        }
+
+        [HttpGet]
+        [Route("api/todo/completed/{id}")]
+        public bool SetCompleted(string id)
+        {
+            var todo = Todo(id);
+            if (todo == null)
+                return false;
+
+            todo.Completed = !todo.Completed;
+            return todo.Completed;
+        }
+
+        [HttpDelete]
+        [Route("api/todo/{id}")]
+        public bool DeleteTodo(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return false;
+
+            var item = TodoItems.FirstOrDefault(td => id == td.Id);
+            if (item != null)
+            {
+                lock (UpdateLock)
+                {
+                    TodoItems.Remove(item);
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+
+    }
 ```
 
 ### Route Fallback to serve Index.html

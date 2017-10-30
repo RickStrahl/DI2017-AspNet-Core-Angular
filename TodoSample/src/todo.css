@@ -2,6 +2,12 @@ html,body {
     font-family: 'Segoe UI', 'Helvetica Neue', sans-serif ;
     font-size: 16px;
 }
+footer {
+    font-size: 0.8em;
+    margin-top: 40px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
 
 form input:not(.ng-pristine).ng-invalid,
 select:not(.ng-pristine).ng-invalid, textarea:not(.ng-pristine).ng-invalid

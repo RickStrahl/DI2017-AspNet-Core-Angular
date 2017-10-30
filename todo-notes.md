@@ -5,12 +5,13 @@
 "../node_modules/bootstrap/dist/css/bootstrap.css",
 "../node_modules/bootstrap/dist/css/bootstrap-theme.css",
 "../node_modules/font-awesome/css/font-awesome.css",
-"../node_modules/toastr/build/toastr.css"
+"../node_modules/toastr/build/toastr.css",
+"todo.css"
 ],
 "scripts": [
     "../node_modules/jquery/dist/jquery.js",
     "../node_modules/toastr/toastr.js",
-    "../node_modules/bootstrap/dist/js/bootstrap.js",
+    "../node_modules/bootstrap/dist/js/bootstrap.js"
 ],
 ```
 
@@ -19,6 +20,27 @@
 * FormsModule
 * HttpClientModule
 
+### Hello World Name Binding
+
+```
+<label>What's your name:</label>
+    <input id="name" placeholder="Enter your name" [(ngModel)]="name"
+class="form-control" />
+<hr>
+
+<div class="alert alert-info">
+    Welcome back {{name}}.
+</div>
+ ```
+
+### Router Links
+
+```html
+<div class="well well-sm">
+    <a routerLink="hello" class="btn btn-default">Hello</a>
+    <a routerLink="todo" class="btn btn-default">Todo</a>
+</div>
+```
 
 ### Todo Routes
 
@@ -29,6 +51,7 @@ const routes: Routes = [
     { path: 'todo', component: TodoComponent, pathMatch: 'full'},
 ];
 ```
+
 
 ### Todo CSS
 
@@ -130,9 +153,9 @@ activeTodo: TodoItem = new TodoItem();
            [ngClass]="{'fa-bookmark-o': !todo.completed,'fa-check': todo.completed }"
            style="cursor: pointer">
         </i>
-        <!--<input type="checkbox"-->
-        <!--title="check to complete todo"-->
-        <!--[(ngModel)]="todo.completed" />-->
+        <!-- <input type="checkbox"
+        title="check to complete todo"
+        [(ngModel)]="todo.completed" /> -->
     </div>
 
     <div class="pull-right">
@@ -150,6 +173,15 @@ activeTodo: TodoItem = new TodoItem();
         </div>
     </div>
 </div>
+```
+
+### Remove Todo
+
+```js
+removeTodo(todo:TodoItem) {
+    this.todos = this.todos.filter(
+      (td) => td != todo);
+}
 ```
 
 ### Todo Entry Form
@@ -194,6 +226,16 @@ activeTodo: TodoItem = new TodoItem();
 </div>
 ```
 
+### Add Todo
+
+```ts
+ addTodo(todo: TodoItem, form1: HTMLFormElement) {
+    this.todos.unshift(todo);
+    this.activeTodo = new TodoItem();
+}
+```
+
+
 ### Add Observables Extra Methods
 
 ```ts
@@ -207,4 +249,50 @@ import 'rxjs/add/operator/catch';
 declare var $:any;
 declare var toastr:any;
 declare var window:any;
+```
+
+### Todo Service
+
+```ts
+import { TodoItem } from './todo.component';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable()
+export class TodoService {
+
+  todos:TodoItem[] = [];
+  activeTodo = new TodoItem();
+  baseUrl = "http://localhost:5000";
+
+  constructor(private http:HttpClient) { }
+
+  getTodos():Observable<TodoItem[]> {
+    return this.http
+         .get<TodoItem[]>(this.baseUrl + "api/todos")
+         .map((todoList)=> this.todos = todoList);
+  }
+
+  getTodo(id:String):Observable<TodoItem>
+  {
+    return this.http.get<TodoItem>(this.baseUrl + "api/todo/" + id)
+          .map( (todo)=> this.activeTodo = todo);
+  }
+
+  selectTodo(todo):Observable<Boolean>
+  {
+    return this.http
+            .get<Boolean>(this.baseUrl + "api/todo/completed/" + todo.id);
+  }
+
+  updateTodo(todo:TodoItem):Observable<TodoItem> {
+    return this.http
+            .post<TodoItem>(this.baseUrl + "api/todo",todo)
+            .map((todo) => this.activeTodo = todo );
+  }
+}
 ```

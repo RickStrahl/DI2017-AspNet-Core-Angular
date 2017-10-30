@@ -7,7 +7,6 @@ These materials cover both Part 1 and Part 2 of the sessions given at Dev Inters
 
 * **Angular Applications with ASP.NET CORE: Part 2 - Putting it all together**
 
-
 This repo contains the source code to the Todo sample application that we built in Part 1 as well as the combined slide deck for both sessions.
 
 
