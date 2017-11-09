@@ -16,17 +16,23 @@ dotnet new webapi
 ### TodoItem Class and Data
 
 ```cs
-public class TodoItem
-{
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public bool Completed { get; set; }
-    public DateTime Entered { get; set; }
+using System;
+using System.Collections.Generic;
 
-    public static List<TodoItem> CreateList()
+namespace TodoService
+{
+
+    public class TodoItem
     {
-        return new List<TodoItem> {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public bool Completed { get; set; }
+        public DateTime Entered { get; set; }
+
+        public static List<TodoItem> CreateList()
+        {
+            return new List<TodoItem> {
     new TodoItem {
         Id="1111-111-11111",
         Title = "Dev Intersection Presentation",
@@ -57,7 +63,9 @@ public class TodoItem
         Completed = true
     }
 };
+        }
     }
+
 }
 ```
 
@@ -112,6 +120,18 @@ public class TodoController : Controller
                 TodoItems[idx] = todo;
         }
         return todo;
+    }
+    
+    [HttpGet]
+    [Route("api/todo/completed/{id}")]
+    public bool SetCompleted(string id)
+    {
+        var todo = Todo(id);
+        if (todo == null)
+            return false;
+
+        todo.Completed = !todo.Completed;
+        return todo.Completed;
     }
 
     [HttpDelete]

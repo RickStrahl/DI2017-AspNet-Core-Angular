@@ -13,20 +13,21 @@ Accept-Encoding: gzip,deflate
 Content-Type: application/json
 
 {
+   id: "3333-333-33333",
    title: "Fly back to Maui",
-   description: "aaa Make the long slog of a drive back home to Hood River.",
+   description: "bbbb Make the long slog of a drive back home to Hood River.",
    completed: false,
    entered: "2017-10-22T02:05:30.7896981Z"
 }
 
 ------------------------------------------------------------------
 
-DELETE http://localhost:5000/api/todo/Fly%20back%20to%20Maui HTTP/1.1
+GET http://localhost:5000/api/todo/completed/3333-333-33333 HTTP/1.1
 Accept-Encoding: gzip,deflate
 
 ------------------------------------------------------------------
 
-GET http://localhost:5000/api/todo/completed/3333-333-33333?completed=true HTTP/1.1
+DELETE http://localhost:5000/api/todo/3333-333-33333 HTTP/1.1
 Accept-Encoding: gzip,deflate
 
 ------------------------------------------------------------------

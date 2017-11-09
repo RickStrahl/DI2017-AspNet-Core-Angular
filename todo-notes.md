@@ -37,8 +37,14 @@ class="form-control" />
 
 ```html
 <div class="well well-sm">
-    <a routerLink="hello" class="btn btn-default">Hello</a>
-    <a routerLink="todo" class="btn btn-default">Todo</a>
+  <a routerLink="hello" class="btn btn-sm btn-default">
+    <i class="fa fa-home" aria-hidden="true"></i>
+    Hello
+  </a>  
+  <a routerLink="todo" class="btn btn-sm btn-default">
+    <i class="fa fa-list-alt" aria-hidden="true"></i>  
+    Todos
+  </a> 
 </div>
 ```
 
@@ -52,49 +58,6 @@ const routes: Routes = [
 ];
 ```
 
-
-### Todo CSS
-
-```css
-form input:not(.ng-pristine).ng-invalid,
-select:not(.ng-pristine).ng-invalid, textarea:not(.ng-pristine).ng-invalid
-{
-    background: lightpink;
-    border-left: 5px solid red;
-}
-form input:not([type=submit]):not([type=checkbox]):not([type=radio]):not([type=file]):not(.ng-pristine).ng-valid,
-select:not(.ng-pristine).ng-invalid, textarea:not(.ng-pristine):not(.ng-untouched).ng-valid
-{
-    background: #adfbdc;
-    border-left: 5px solid green;
-}
-
-.todo-item {
-    padding: 5px;
-    border-bottom: 1px solid silver;
-    transition: opacity 900ms ease-out;
-}
-.todo-header {
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #457196;
-}
-.todo-content {
-    padding-left: 30px;
-}
-.todo-content .fa-check {
-    color: green !important;
-    font-weight: bold;
-    font-size: 1.2em;
-}
-.completed {
-    text-decoration: line-through;
-    font-style: italic;
-    opacity: 0.4;
-
-}
-```
-
 ### Todo Class
 
 ```ts
@@ -103,7 +66,7 @@ export class TodoItem {
 	title = "";
 	description = "";
 	entered = new Date();
-	completed = false;
+	completed:boolean = false;
 }
 ```
 
@@ -254,7 +217,6 @@ declare var window:any;
 ### Todo Service
 
 ```ts
-import { TodoItem } from './todo.component';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
@@ -265,34 +227,33 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class TodoService {
 
-  todos:TodoItem[] = [];
+  todos: TodoItem[] = [];
   activeTodo = new TodoItem();
-  baseUrl = "http://localhost:5000";
 
-  constructor(private http:HttpClient) { }
+  baseUrl = "http://localhost:5000/";
 
-  getTodos():Observable<TodoItem[]> {
+  constructor(private http: HttpClient) { }
+
+  getTodos(): Observable<TodoItem[]> {
     return this.http
-         .get<TodoItem[]>(this.baseUrl + "api/todos")
-         .map((todoList)=> this.todos = todoList);
+      .get<TodoItem[]>(this.baseUrl + "api/todos")
+      .map((todoList) => this.todos = todoList);
   }
 
-  getTodo(id:String):Observable<TodoItem>
-  {
+  getTodo(id: String): Observable<TodoItem> {
     return this.http.get<TodoItem>(this.baseUrl + "api/todo/" + id)
-          .map( (todo)=> this.activeTodo = todo);
+      .map((todo) => this.activeTodo = todo);
   }
 
-  selectTodo(todo):Observable<Boolean>
-  {
+  completeTodo(todo): Observable<Boolean> {
     return this.http
-            .get<Boolean>(this.baseUrl + "api/todo/completed/" + todo.id);
+      .get<Boolean>(this.baseUrl + "api/todo/completed/" + todo.id);
   }
 
-  updateTodo(todo:TodoItem):Observable<TodoItem> {
+  updateTodo(todo: TodoItem): Observable<TodoItem> {
     return this.http
-            .post<TodoItem>(this.baseUrl + "api/todo",todo)
-            .map((todo) => this.activeTodo = todo );
+      .post<TodoItem>(this.baseUrl + "api/todo", todo)
+      .map((todo) => this.activeTodo = todo);
   }
 }
 ```
